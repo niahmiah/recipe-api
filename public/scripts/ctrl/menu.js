@@ -1,5 +1,6 @@
 var foodApp = angular.module('foodApp', []);
 foodApp.controller('menuCtrl', function ($scope, $http) {
+  $scope.showSettings = false;
   $scope.menuSettings = {};
   $scope.mealsInDay = ["breakfast", "lunch", "dinner", "snack"];
   $scope.numberDays = 7;
@@ -64,6 +65,7 @@ foodApp.controller('menuCtrl', function ($scope, $http) {
     if($scope.menu && $scope.menu[day] && $scope.menu[day][meal]){
       $scope.menu[day][meal].forEach(function(recipe){
         if(field === 'calories' || field === 'carbohydrates'){
+          if(!recipe.nutrition[field]) return total;
           return total = total + recipe.nutrition[field].total;
         }
         total = total + recipe.nutrition[field];

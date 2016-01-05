@@ -51,7 +51,7 @@
         <table class="u-full-width">
           <thead>
             <tr>
-              <th>name</th>
+              <th></th>
               <!-- <th class="center">srv</th> -->
               <th class="center">cal</th>
               <th class="center">carb</th>
@@ -96,11 +96,25 @@
           </div>
 
           <div class="row">
-            <div class="two columns" ng-repeat="mealType in mealTypes">
+            <div class="three columns" ng-repeat="mealType in mealTimes">
               <label>
                 <input
                   type="checkbox"
                   name="{{mealType}}"
+                  value="{{mealType}}"
+                  ng-checked="recipe.mealTypes.indexOf(mealType) > -1"
+                  ng-click="toggleSelection(mealType)"
+                /> {{mealType}}
+              </label>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="three columns" ng-repeat="mealType in mealTypes">
+              <label>
+                <input
+                  type="radio"
+                  name="mealType"
                   value="{{mealType}}"
                   ng-checked="recipe.mealTypes.indexOf(mealType) > -1"
                   ng-click="toggleSelection(mealType)"

@@ -3,7 +3,8 @@ foodApp.controller('recipeCtrl', function ($scope, $http) {
   $scope.message = "";
   $scope.showEditor = false;
   $scope.recipes = [];
-  $scope.mealTypes = ["breakfast", "lunch", "dinner", "entree", "side", "snack"];
+  $scope.mealTimes = ["breakfast", "lunch", "dinner", "snack"];
+  $scope.mealTypes = ["entree", "side", "beverage"];
   $scope.recipe = {
     ingredients: [],
     mealTypes: []
@@ -39,7 +40,10 @@ foodApp.controller('recipeCtrl', function ($scope, $http) {
   };
   $scope.newRecipe = function(){
     $scope.showEditor = true;
-    $scope.recipe = {};
+    $scope.recipe = {
+      ingredients: [],
+      mealTypes: []
+    };
   };
   $scope.loadRecipe = function(id){
     $http.get('/recipe/' + id).then(function success(res){
@@ -134,11 +138,23 @@ foodApp.controller('recipeCtrl', function ($scope, $http) {
   };
   $scope.toggleSelection = function(mealType){
     $scope.recipe.mealTypes = $scope.recipe.mealTypes || [];
+    var radioTypes = ["entree", "side", "beverage"];
+
     var idx = $scope.recipe.mealTypes.indexOf(mealType);
     if (idx > -1) {
       $scope.recipe.mealTypes.splice(idx, 1);
     } else {
       $scope.recipe.mealTypes.push(mealType);
+    }
+
+    if(radioTypes.indexOf(mealType) > -1){
+      radioTypes.splice(radioTypes.indexOf(mealType), 1);
+      radioTypes.forEach(function(type){
+        var idx = $scope.recipe.mealTypes.indexOf(type);
+        if (idx > -1) {
+          $scope.recipe.mealTypes.splice(idx, 1);
+        }
+      });
     }
   };
 

@@ -1,3 +1,14 @@
+#settingsCog {
+  width: 30px;
+  height: 30px;
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  z-index: 155;
+  background: #CCC;
+  -webkit-mask: url(/images/cog.svg) center / contain no-repeat;
+}
+
 #content {
   padding:20px 0px;
 }
@@ -19,6 +30,10 @@
 }
 
 .three {
+  width: 50%;
+}
+
+.four {
   width: 50%;
 }
 

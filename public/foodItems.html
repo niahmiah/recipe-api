@@ -50,8 +50,8 @@
         <table class="u-full-width">
           <thead>
             <tr>
-              <th>name</th>
-              <th>qty</th>
+              <th></th>
+              <!-- <th>qty</th> -->
               <th class="center">cal</th>
               <th class="center">carb</th>
               <th class="center">pro</th>
@@ -60,7 +60,7 @@
           <tbody>
             <tr ng-repeat="foodItem in foodItems">
               <td><a href="#" ng-click="loadItem(foodItem._id)">{{foodItem.name}}</a></td>
-              <td><span ng-show="foodItem.qty > 0">{{foodItem.qty}}</span> <span ng-show="foodItem.fraction.numerator > 0">{{foodItem.fraction.numerator}}/{{foodItem.fraction.denominator}}</span> {{foodItem.unit}}</td>
+              <!-- <td><span ng-show="foodItem.qty > 0">{{foodItem.qty}}</span> <span ng-show="foodItem.fraction.numerator > 0">{{foodItem.fraction.numerator}}/{{foodItem.fraction.denominator}}</span> {{foodItem.unit}}</td> -->
               <td class="center">{{foodItem.nutrition.calories.total}}</td>
               <td class="center">{{foodItem.nutrition.carbohydrates.total}}</td>
               <td class="center">{{foodItem.nutrition.protein}}</td>

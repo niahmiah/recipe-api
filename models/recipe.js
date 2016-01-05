@@ -18,7 +18,7 @@ IngredientAmount.plugin(require('mongoose-autopopulate'));
 
 const Recipe = new Schema({
   name: {type: String, required: true},
-  mealTypes: {type: Array, enum: ["breakfast", "lunch", "dinner", "entree", "side", "snack"]},
+  mealTypes: {type: Array, enum: ["breakfast", "lunch", "dinner", "snack", "entree", "side", "beverage"]},
   ingredients: [IngredientAmount],
   instructions: {type: String},
   time: {
