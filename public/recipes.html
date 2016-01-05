@@ -1,0 +1,256 @@
+<!doctype html>
+<html ng-app="foodApp">
+<head>
+  <title>Recipes</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href='//fonts.googleapis.com/css?family=Raleway:400,300,600' rel='stylesheet' type='text/css'>
+  <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-resource.min.js"></script>
+  <script src="/scripts/3p/measure.js"></script>
+  <script src="/scripts/3p/lodash.js"></script>
+  <script src="/scripts/units.js"></script>
+  <script src="/scripts/objectMod.js"></script>
+
+  <link href="/styles/normalize.css" rel="stylesheet" type="text/css">
+  <link href="/styles/skeleton.css" rel="stylesheet" type="text/css">
+  <link href="/styles/base.css" rel="stylesheet" type="text/css">
+  <script src="/scripts/ctrl/recipe.js"></script>
+
+</head>
+
+<body ng-controller="recipeCtrl">
+  <div class="container">
+    <div class="row">
+      <div class="twelve columns">
+        <h1>Recipes</h1>
+      </div>
+    </div>
+    <div class="row">
+      <div class="two columns"><a href="/index.html">The Menu</a></div>
+      <div class="two columns center"><a href="/foodItems.html">Foods</a></div>
+      <div class="two columns right"><a href="/recipes.html">Recipes</a></div>
+    </div>
+
+    <div id="content">
+
+      <div id="recipes" ng-show="!showEditor">
+        <p>These are combinations of ingredients used to create a new dish.</p>
+
+        <div class="row">
+          <div class="six columns">
+            <input type="text" class="u-full-width u-max-full-width"/>
+          </div>
+          <div class="three columns">
+            <button ng-click="search()">Search</button>
+          </div>
+          <div class="three columns right">
+            <button ng-click="newRecipe()" class="button-primary">Add Recipe</button>
+          </div>
+        </div>
+
+        <table class="u-full-width">
+          <thead>
+            <tr>
+              <th>name</th>
+              <!-- <th class="center">srv</th> -->
+              <th class="center">cal</th>
+              <th class="center">carb</th>
+              <th class="center">pro</th>
+              <!--<th>actions</th>-->
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat="recipe in recipes">
+              <td><a href="#" ng-click="loadRecipe(recipe._id)">{{recipe.name}}</a></td>
+              <!-- <td class="center">{{recipe.servings}}</td> -->
+              <td class="center">{{recipe.nutrition.calories.total}}</td>
+              <td class="center">{{recipe.nutrition.carbohydrates.total}}</td>
+              <td class="center">{{recipe.nutrition.protein}}</td>
+              <!--<td><a href="#" ng-click="removeRecipe(recipe._id)">delete</a></td>-->
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div id="recipe" ng-show="showEditor">
+        <form>
+          <div class="row">
+            <div class="six columns">
+              <input type="hidden" ng-model="recipe._id"/>
+              <label for="name">Name</label>
+              <input type="text" id="name" ng-model="recipe.name" class="u-full-width u-max-full-width"/>
+            </div>
+            <div class="two columns">
+              <label for="servings">Servings</label>
+              <input type="number" id="servings" ng-model="recipe.servings" min="0" max="999"/>
+            </div>
+
+            <div class="two columns">
+              <label for="prep">Prep&nbsp;Time</label>
+              <input type="number" id="prep" ng-model="recipe.time.prep" min="0" max="999"/>
+            </div>
+            <div class="two columns">
+              <label for="cook">Cook&nbsp;Time</label>
+              <input type="number" id="cook" ng-model="recipe.time.cook" min="0" max="999"/>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="two columns" ng-repeat="mealType in mealTypes">
+              <label>
+                <input
+                  type="checkbox"
+                  name="{{mealType}}"
+                  value="{{mealType}}"
+                  ng-checked="recipe.mealTypes.indexOf(mealType) > -1"
+                  ng-click="toggleSelection(mealType)"
+                /> {{mealType}}
+              </label>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="twelve columns">
+              <h2>Ingredients</h2>
+            </div>
+          </div>
+          <ul>
+            <li ng-repeat="ingredientAmt in recipe.ingredients">
+              <span>
+                <span ng-show="ingredientAmt.qty > 0">{{ingredientAmt.qty}}</span>
+                <span ng-show="ingredientAmt.fraction.numerator"> {{ingredientAmt.fraction.numerator}}/{{ingredientAmt.fraction.denominator}}</span>
+                {{ingredientAmt.unit}} {{ingredientAmt.foodItem.name}} (<a href="#" ng-click="removeIngredient($index)">delete</a>)
+              </span>
+            </li>
+          </ul>
+
+          <input type="number" id="qty" ng-model="ingredient.qty" min="0" max="9999"/>
+          <select ng-model="ingredient.fraction.numerator" id="numerator" convert-to-number>
+            <option value="0">0</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+          </select>/<select ng-model="ingredient.fraction.denominator" id="denominator" convert-to-number>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="8">8</option>
+          </select>
+          <select ng-model="ingredient.unit" id="unit">
+            <option value=""></option>
+            <option value="tsp">tsp</option>
+            <option value="tbs">tbsp</option>
+            <option value="cup">cup</option>
+            <option value="oz">oz</option>
+            <option value="lb">lb</option>
+          </select>
+          <select ng-model="ingredient.foodItem">
+            <option ng-repeat="foodItem in foodItems" value="{{foodItem._id}}">{{foodItem.name}}</option>
+          </select>
+          <button type="button" ng-click="addIngredient(ingredient)">Add Ingredient</button>
+
+          <h2>Instructions</h2>
+          <textarea id="instructions" ng-model="recipe.instructions" rows="8" cols="40"></textarea><br>
+
+          <div class="row">
+            <div class="six columns">
+              <h2>Nutrition Info</h2>
+              <p>(Per Serving)</p>
+            </div>
+          </div>
+          <div class="row">
+            <div class="three columns">
+              <label for="totalCalories">Calories Total</label>
+              <input type="number" name="totalCalories" id="totalCalories" min="1" max="9999" ng-model="recipe.nutrition.calories.total"/><br>
+            </div>
+            <div class="three columns">
+              <label for="fromFat">Calories from Fat</label>
+              <input type="number" name="fromFat" id="fromFat" min="1" max="9999" ng-model="recipe.nutrition.calories.fromFat"/>
+            </div>
+          </div>
+          <div class="row">
+            <div class="three columns">
+              <label for="sugar">Carbs Total</label>
+              <input type="number" id="sugar" min="1" max="9999" ng-model="recipe.nutrition.carbohydrates.total"/>g<br>
+            </div>
+            <div class="three columns">
+              <label for="sugar">Carbs from Sugar</label>
+              <input type="number" id="sugar" min="1" max="9999" ng-model="recipe.nutrition.carbohydrates.sugar"/>g<br>
+            </div>
+            <div class="three columns">
+              <label for="fiber">Carbs from Fiber</label>
+              <input type="number" id="fiber" min="1" max="9999" ng-model="recipe.nutrition.carbohydrates.fiber"/>g
+            </div>
+          </div>
+
+          <label for="cholesterol">Cholesterol</label>
+          <input type="number" id="cholesterol" min="1" max="9999" ng-model="recipe.nutrition.cholesterol"/>mg<br>
+          <label for="sodium">Sodium</label>
+          <input type="number" id="sodium" min="1" max="9999" ng-model="recipe.nutrition.sodium"/>mg<br>
+          <label for="totalfat">Total Fat</label>
+          <input type="number" id="totalfat" min="1" max="9999" ng-model="foodItem.nutrition.fat.total"/>g<br>
+          <div class="row">
+            <div class="three columns">
+              <label for="saturated">Saturated Fat</label>
+              <input type="number" id="saturated" min="1" max="9999" ng-model="recipe.nutrition.fat.saturated"/>g<br>
+            </div>
+            <div class="three columns">
+              <label for="trans">Trans Fat</label>
+              <input type="number" id="trans" min="1" max="9999" ng-model="recipe.nutrition.fat.trans"/>g<br>
+            </div>
+            <div class="three columns">
+              <label for="polyunsat">Polyunsat Fat</label>
+              <input type="number" id="polyunsat" min="1" max="9999" ng-model="recipe.nutrition.fat.polyunsat"/>g<br>
+            </div>
+            <div class="three columns">
+              <label for="monounsat">Monounsat Fat</label>
+              <input type="number" id="monounsat" min="1" max="9999" ng-model="recipe.nutrition.fat.monounsat"/>g
+            </div>
+          </div>
+          <label for="potassium">Potassium</label>
+          <input type="number" id="potassium" min="1" max="9999" ng-model="recipe.nutrition.potassium"/>mg<br>
+          <label for="protein">Protein</label>
+          <input type="number" id="protein" min="1" max="9999" ng-model="recipe.nutrition.protein"/>g<br>
+          <div class="row">
+            <div class="three columns">
+              <label for="a">Vitamin A</label>
+              <input type="number" id="a" min="1" max="9999" ng-model="recipe.nutrition.vitamins.a"/>%<br>
+            </div>
+            <div class="three columns">
+              <label for="c">Vitamin C</label>
+              <input type="number" id="c" min="1" max="9999" ng-model="recipe.nutrition.vitamins.c"/>%<br>
+            </div>
+            <div class="three columns">
+              <label for="d">Vitamin D</label>
+              <input type="number" id="d" min="1" max="9999" ng-model="recipe.nutrition.vitamins.d"/>%<br>
+            </div>
+            <div class="three columns">
+              <label for="e">Vitamin E</label>
+              <input type="number" id="e" min="1" max="9999" ng-model="recipe.nutrition.vitamins.e"/>%<br>
+            </div>
+          </div>
+          <div class="row">
+            <div class="three columns">
+              <label for="calcium">Calcium</label>
+              <input type="number" id="calcium" min="1" max="9999" ng-model="recipe.nutrition.vitamins.calcium"/>%<br>
+            </div>
+            <div class="three columns">
+              <label for="iron">Iron</label>
+              <input type="number" id="iron" min="1" max="9999" ng-model="recipe.nutrition.vitamins.iron"/>%<br>
+            </div>
+          </div>
+          <br>
+          <button type="submit" ng-click="saveRecipe(recipe)" class="button-primary">Save</button>
+          <button type="button" ng-click="showEditor = !showEditor">Cancel</button>
+          <button href="#" ng-click="removeRecipe(recipe._id)">delete</button>
+        </form>
+      </div>
+
+    </div>
+  </div>
+
+</body>
+</html>

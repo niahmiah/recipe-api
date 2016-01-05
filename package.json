@@ -1,0 +1,25 @@
+{
+  "name": "stephaniesrecipes",
+  "version": "1.0.0",
+  "description": "Stephanie's Recipes",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha",
+    "start": "node index"
+  },
+  "author": "Ian Patton",
+  "license": "MIT",
+  "devDependencies": {
+    "chai": "^3.4.1",
+    "mocha": "^2.3.4",
+    "supertest": "^1.1.0"
+  },
+  "dependencies": {
+    "async": "^1.5.1",
+    "body-parser": "^1.14.2",
+    "debug": "^2.2.0",
+    "express": "^4.13.3",
+    "measure": "git+https://github.com/niahmiah/measure.git",
+    "mongoose": "^4.3.4"
+  }
+}

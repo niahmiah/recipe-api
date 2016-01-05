@@ -1,0 +1,27 @@
+#content {
+  padding:20px 0px;
+}
+
+.section {
+  padding: 5px 20px 5px 20px;
+}
+
+.right {
+  text-align: right;
+}
+
+.center {
+  text-align: center;
+}
+
+.two {
+  width: 33%;
+}
+
+.three {
+  width: 50%;
+}
+
+.six {
+  width: 100%;
+}
