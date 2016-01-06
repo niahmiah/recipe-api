@@ -26,7 +26,7 @@
       </div>
     </div>
     <div class="row">
-      <div class="two columns"><a href="/index.html">The Menu</a></div>
+      <div class="two columns"><a href="/index.html">Menu</a></div>
       <div class="two columns center"><a href="/foodItems.html">Foods</a></div>
       <div class="two columns right"><a href="/recipes.html">Recipes</a></div>
     </div>
@@ -161,13 +161,13 @@
             <option value="oz">oz</option>
             <option value="lb">lb</option>
           </select>
-          <select ng-model="ingredient.foodItem">
+          <select ng-model="ingredient.foodItem" class="u-full-width u-max-full-width">
             <option ng-repeat="foodItem in foodItems" value="{{foodItem._id}}">{{foodItem.name}}</option>
           </select>
           <button type="button" ng-click="addIngredient(ingredient)">Add Ingredient</button>
 
           <h2>Instructions</h2>
-          <textarea id="instructions" ng-model="recipe.instructions" rows="8" cols="40"></textarea><br>
+          <textarea id="instructions" ng-model="recipe.instructions" rows="8" class="u-full-width u-max-full-width"></textarea><br>
 
           <div class="row">
             <div class="six columns">
@@ -177,7 +177,7 @@
           </div>
           <div class="row">
             <div class="three columns">
-              <label for="totalCalories">Calories Total</label>
+              <label for="totalCalories">Calories</label>
               <input type="number" name="totalCalories" id="totalCalories" min="1" max="9999" ng-model="recipe.nutrition.calories.total"/><br>
             </div>
             <div class="three columns">
@@ -185,27 +185,10 @@
               <input type="number" name="fromFat" id="fromFat" min="1" max="9999" ng-model="recipe.nutrition.calories.fromFat"/>
             </div>
           </div>
-          <div class="row">
-            <div class="three columns">
-              <label for="sugar">Carbs Total</label>
-              <input type="number" id="sugar" min="1" max="9999" ng-model="recipe.nutrition.carbohydrates.total"/>g<br>
-            </div>
-            <div class="three columns">
-              <label for="sugar">Carbs from Sugar</label>
-              <input type="number" id="sugar" min="1" max="9999" ng-model="recipe.nutrition.carbohydrates.sugar"/>g<br>
-            </div>
-            <div class="three columns">
-              <label for="fiber">Carbs from Fiber</label>
-              <input type="number" id="fiber" min="1" max="9999" ng-model="recipe.nutrition.carbohydrates.fiber"/>g
-            </div>
-          </div>
 
-          <label for="cholesterol">Cholesterol</label>
-          <input type="number" id="cholesterol" min="1" max="9999" ng-model="recipe.nutrition.cholesterol"/>mg<br>
-          <label for="sodium">Sodium</label>
-          <input type="number" id="sodium" min="1" max="9999" ng-model="recipe.nutrition.sodium"/>mg<br>
           <label for="totalfat">Total Fat</label>
           <input type="number" id="totalfat" min="1" max="9999" ng-model="foodItem.nutrition.fat.total"/>g<br>
+
           <div class="row">
             <div class="three columns">
               <label for="saturated">Saturated Fat</label>
@@ -224,10 +207,32 @@
               <input type="number" id="monounsat" min="1" max="9999" ng-model="recipe.nutrition.fat.monounsat"/>g
             </div>
           </div>
+
+          <label for="cholesterol">Cholesterol</label>
+          <input type="number" id="cholesterol" min="1" max="9999" ng-model="recipe.nutrition.cholesterol"/>mg<br>
+          <label for="sodium">Sodium</label>
+          <input type="number" id="sodium" min="1" max="9999" ng-model="recipe.nutrition.sodium"/>mg<br>
           <label for="potassium">Potassium</label>
           <input type="number" id="potassium" min="1" max="9999" ng-model="recipe.nutrition.potassium"/>mg<br>
+
+          <div class="row">
+            <div class="three columns">
+              <label for="sugar">Total Carbohydrate</label>
+              <input type="number" id="sugar" min="1" max="9999" ng-model="recipe.nutrition.carbohydrates.total"/>g<br>
+            </div>
+            <div class="three columns">
+              <label for="sugar">Sugar</label>
+              <input type="number" id="sugar" min="1" max="9999" ng-model="recipe.nutrition.carbohydrates.sugar"/>g<br>
+            </div>
+            <div class="three columns">
+              <label for="fiber">Dietary Fiber</label>
+              <input type="number" id="fiber" min="1" max="9999" ng-model="recipe.nutrition.carbohydrates.fiber"/>g
+            </div>
+          </div>
+
           <label for="protein">Protein</label>
           <input type="number" id="protein" min="1" max="9999" ng-model="recipe.nutrition.protein"/>g<br>
+
           <div class="row">
             <div class="three columns">
               <label for="a">Vitamin A</label>

@@ -21,7 +21,7 @@
       </div>
     </div>
     <div class="row">
-      <div class="two columns"><a href="/index.html">The Menu</a></div>
+      <div class="two columns"><a href="/index.html">Menu</a></div>
       <div class="two columns center"><a href="/foodItems.html">Foods</a></div>
       <div class="two columns right"><a href="/recipes.html">Recipes</a></div>
     </div>
@@ -106,12 +106,12 @@
           </div>
           <div class="row">
             <div class="six columns">
-              <h2>Nutrition Info</h2>
+              <h2>Nutrition Facts</h2>
             </div>
           </div>
           <div class="row">
             <div class="three columns">
-              <label for="totalCalories">Calories Total</label>
+              <label for="totalCalories">Calories</label>
               <input type="number" name="totalCalories" id="totalCalories" min="1" max="9999" ng-model="foodItem.nutrition.calories.total"/><br>
             </div>
             <div class="three columns">
@@ -119,25 +119,7 @@
               <input type="number" name="fromFat" id="fromFat" min="1" max="9999" ng-model="foodItem.nutrition.calories.fromFat"/>
             </div>
           </div>
-          <div class="row">
-            <div class="three columns">
-              <label for="sugar">Carbs Total</label>
-              <input type="number" id="sugar" min="1" max="9999" ng-model="foodItem.nutrition.carbohydrates.total"/>g<br>
-            </div>
-            <div class="three columns">
-              <label for="sugar">Carbs from Sugar</label>
-              <input type="number" id="sugar" min="1" max="9999" ng-model="foodItem.nutrition.carbohydrates.sugar"/>g<br>
-            </div>
-            <div class="three columns">
-              <label for="fiber">Carbs from Fiber</label>
-              <input type="number" id="fiber" min="1" max="9999" ng-model="foodItem.nutrition.carbohydrates.fiber"/>g
-            </div>
-          </div>
 
-          <label for="cholesterol">Cholesterol</label>
-          <input type="number" id="cholesterol" min="1" max="9999" ng-model="foodItem.nutrition.cholesterol"/>mg<br>
-          <label for="sodium">Sodium</label>
-          <input type="number" id="sodium" min="1" max="9999" ng-model="foodItem.nutrition.sodium"/>mg<br>
           <label for="totalfat">Total Fat</label>
           <input type="number" id="totalfat" min="1" max="9999" ng-model="foodItem.nutrition.fat.total"/>g<br>
           <div class="row">
@@ -158,10 +140,32 @@
               <input type="number" id="monounsat" min="1" max="9999" ng-model="foodItem.nutrition.fat.monounsat"/>g
             </div>
           </div>
+
+          <label for="cholesterol">Cholesterol</label>
+          <input type="number" id="cholesterol" min="1" max="9999" ng-model="foodItem.nutrition.cholesterol"/>mg<br>
+          <label for="sodium">Sodium</label>
+          <input type="number" id="sodium" min="1" max="9999" ng-model="foodItem.nutrition.sodium"/>mg<br>
           <label for="potassium">Potassium</label>
           <input type="number" id="potassium" min="1" max="9999" ng-model="foodItem.nutrition.potassium"/>mg<br>
+
+          <div class="row">
+            <div class="three columns">
+              <label for="sugar">Total Carbohydrate</label>
+              <input type="number" id="sugar" min="1" max="9999" ng-model="foodItem.nutrition.carbohydrates.total"/>g<br>
+            </div>
+            <div class="three columns">
+              <label for="sugar">Sugars</label>
+              <input type="number" id="sugar" min="1" max="9999" ng-model="foodItem.nutrition.carbohydrates.sugar"/>g<br>
+            </div>
+            <div class="three columns">
+              <label for="fiber">Dietary Fiber</label>
+              <input type="number" id="fiber" min="1" max="9999" ng-model="foodItem.nutrition.carbohydrates.fiber"/>g
+            </div>
+          </div>
+
           <label for="protein">Protein</label>
           <input type="number" id="protein" min="1" max="9999" ng-model="foodItem.nutrition.protein"/>g<br>
+
           <div class="row">
             <div class="three columns">
               <label for="a">Vitamin A</label>
