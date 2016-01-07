@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link href='//fonts.googleapis.com/css?family=Raleway:400,300,600' rel='stylesheet' type='text/css'>
   <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-touch.min.js"></script>
   <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-resource.min.js"></script>
   <script src="/scripts/3p/measure.js"></script>
   <script src="/scripts/3p/lodash.js"></script>
@@ -171,7 +172,7 @@
 
           <div class="row">
             <div class="six columns">
-              <h2>Nutrition Info</h2>
+              <h2>Nutrition Facts</h2>
               <p>(Per Serving)</p>
             </div>
           </div>
@@ -217,16 +218,16 @@
 
           <div class="row">
             <div class="three columns">
-              <label for="sugar">Total Carbohydrate</label>
-              <input type="number" id="sugar" min="1" max="9999" ng-model="recipe.nutrition.carbohydrates.total"/>g<br>
-            </div>
-            <div class="three columns">
-              <label for="sugar">Sugar</label>
-              <input type="number" id="sugar" min="1" max="9999" ng-model="recipe.nutrition.carbohydrates.sugar"/>g<br>
+              <label for="totalCarb">Total Carbs</label>
+              <input type="number" id="totalCarb" min="1" max="9999" ng-model="recipe.nutrition.carbohydrates.total"/>g<br>
             </div>
             <div class="three columns">
               <label for="fiber">Dietary Fiber</label>
               <input type="number" id="fiber" min="1" max="9999" ng-model="recipe.nutrition.carbohydrates.fiber"/>g
+            </div>
+            <div class="three columns">
+              <label for="sugar">Sugar</label>
+              <input type="number" id="sugar" min="1" max="9999" ng-model="recipe.nutrition.carbohydrates.sugar"/>g<br>
             </div>
           </div>
 

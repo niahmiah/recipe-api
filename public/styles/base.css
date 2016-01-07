@@ -1,3 +1,7 @@
+body {
+  background-color: #efefef;
+}
+
 #settingsCog {
   width: 30px;
   height: 30px;
@@ -39,4 +43,8 @@
 
 .six {
   width: 100%;
+}
+
+button, .button {
+  background-color: #fff;
 }

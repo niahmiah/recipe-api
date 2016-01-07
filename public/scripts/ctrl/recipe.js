@@ -7,7 +7,8 @@ foodApp.controller('recipeCtrl', function ($scope, $http) {
   $scope.mealTypes = ["entree", "side", "beverage"];
   $scope.recipe = {
     ingredients: [],
-    mealTypes: []
+    mealTypes: [],
+    servings: 1
   };
   $scope.foodItems = [];
   $scope.ingredient = {
@@ -20,7 +21,8 @@ foodApp.controller('recipeCtrl', function ($scope, $http) {
     $http({url: '/recipe', method: "POST", data: recipe}).success(function success(res){
       $scope.recipe = {
         ingredients: [],
-        mealTypes: []
+        mealTypes: [],
+        servings: 1
       };
       $scope.getRecipes();
       $scope.showEditor = false;
@@ -42,7 +44,8 @@ foodApp.controller('recipeCtrl', function ($scope, $http) {
     $scope.showEditor = true;
     $scope.recipe = {
       ingredients: [],
-      mealTypes: []
+      mealTypes: [],
+      servings: 1
     };
   };
   $scope.loadRecipe = function(id){
@@ -89,6 +92,9 @@ foodApp.controller('recipeCtrl', function ($scope, $http) {
     }
     return string;
   }
+  $scope.$watch('recipe.servings', function() {
+    $scope.recalculateNutrition();
+  });
   $scope.recalculateNutrition = function(){
     var nutritionInfo = {};
     $scope.recipe.ingredients.forEach(function(ingr){

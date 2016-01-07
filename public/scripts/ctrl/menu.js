@@ -52,6 +52,7 @@ foodApp.controller('menuCtrl', function ($scope, $http) {
 
   $scope.getMenuForDay = function(day, meal){
     day = day.replace(/\//g, '');
+    day = moment(day, 'MMDDYYYY').format('YYYYMMDD');
     // console.log('get menu for', day, meal);
     if($scope.menu && $scope.menu[day] && $scope.menu[day][meal]){
       return $scope.menu[day][meal];
@@ -61,6 +62,7 @@ foodApp.controller('menuCtrl', function ($scope, $http) {
 
   $scope.getTotal = function(day, meal, field){
     day = day.replace(/\//g, '');
+    day = moment(day, 'MMDDYYYY').format('YYYYMMDD');
     var total = 0;
     if($scope.menu && $scope.menu[day] && $scope.menu[day][meal]){
       $scope.menu[day][meal].forEach(function(recipe){
