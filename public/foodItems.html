@@ -1,7 +1,7 @@
 <!doctype html>
 <html ng-app="foodApp">
 <head>
-  <title>Foods and Beverages</title>
+  <title>Foods</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link href='//fonts.googleapis.com/css?family=Raleway:400,300,600' rel='stylesheet' type='text/css'>
   <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
@@ -45,7 +45,15 @@
         </div>
 
         <p ng-show="pages.length > 1">
-          Pages: <span ng-repeat="page in pages">&nbsp;<a href="#" ng-click="getFoodItems($index+1)" ng-show="($index+1) !== navigation.page">{{page}}</a><span ng-show="($index+1) === navigation.page">{{page}}</span>&nbsp;</span>
+          Pages:
+          <span ng-repeat="page in pages">
+            <a href="#" ng-click="getFoodItems($index+1)" ng-show="$first">&lt;&lt;</a>
+            <span ng-show="($index + 1) < (navigation.page + 10) && ($index + 1) > (navigation.page - 10) ">
+              <a href="#" ng-click="getFoodItems($index+1)" ng-show="($index+1) !== navigation.page">{{page}}</a>
+              <span ng-show="($index+1) === navigation.page">{{page}}</span>
+            </span>
+            <a href="#" ng-click="getFoodItems($index+1)" ng-show="$last">&gt;&gt;</a>
+          </span>
         </p>
 
         <table class="u-full-width">

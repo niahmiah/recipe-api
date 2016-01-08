@@ -35,10 +35,16 @@ foodApp.controller('recipeCtrl', function ($scope, $http) {
       $scope.recipes = res.data;
     });
   };
-  $scope.getFoodItems = function(){
-    $http.get('/foodItem').then(function success(res){
+  $scope.getFoodItems = function(search){
+    if(!search) return;
+    searchString = '?search='+encodeURIComponent(search);
+    $http.get('/foodItem' + searchString).then(function success(res){
       $scope.foodItems = res.data;
     });
+  };
+  $scope.clearFoodItems = function(){
+    $scope.foodItems = [];
+    $scope.ingredientSearch = null;
   };
   $scope.newRecipe = function(){
     $scope.showEditor = true;
@@ -68,6 +74,7 @@ foodApp.controller('recipeCtrl', function ($scope, $http) {
     })
     $scope.recipe.ingredients.push(ingredient);
     $scope.ingredient = {};
+    $scope.clearFoodItems();
     $scope.recalculateNutrition();
   };
   $scope.removeIngredient = function(index){
@@ -165,5 +172,4 @@ foodApp.controller('recipeCtrl', function ($scope, $http) {
   };
 
   $scope.getRecipes();
-  $scope.getFoodItems();
 });

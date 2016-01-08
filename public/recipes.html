@@ -129,7 +129,7 @@
               <h2>Ingredients</h2>
             </div>
           </div>
-          <ul>
+          <ul ng-show="recipe.ingredients.length">
             <li ng-repeat="ingredientAmt in recipe.ingredients">
               <span>
                 <span ng-show="ingredientAmt.qty > 0">{{ingredientAmt.qty}}</span>
@@ -139,33 +139,43 @@
             </li>
           </ul>
 
-          <input type="number" id="qty" ng-model="ingredient.qty" min="0" max="9999"/>
-          <select ng-model="ingredient.fraction.numerator" id="numerator" convert-to-number>
-            <option value="0">0</option>
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
-            <option value="5">5</option>
-          </select>/<select ng-model="ingredient.fraction.denominator" id="denominator" convert-to-number>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
-            <option value="5">5</option>
-            <option value="8">8</option>
-          </select>
-          <select ng-model="ingredient.unit" id="unit">
-            <option value=""></option>
-            <option value="tsp">tsp</option>
-            <option value="tbs">tbsp</option>
-            <option value="cup">cup</option>
-            <option value="oz">oz</option>
-            <option value="lb">lb</option>
-          </select>
-          <select ng-model="ingredient.foodItem" class="u-full-width u-max-full-width">
-            <option ng-repeat="foodItem in foodItems" value="{{foodItem._id}}">{{foodItem.name}}</option>
-          </select>
-          <button type="button" ng-click="addIngredient(ingredient)">Add Ingredient</button>
+          <span ng-show="!foodItems.length">
+            <input type="text" id="qty" ng-model="ingredientSearch"/>
+            <button type="button" ng-click="getFoodItems(ingredientSearch)">Search</button><br>
+          </span>
+
+          <span ng-show="foodItems.length">
+
+            <input type="number" id="qty" ng-model="ingredient.qty" min="0" max="9999"/>
+            <select ng-model="ingredient.fraction.numerator" id="numerator" convert-to-number>
+              <option value="0">0</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+            </select>/<select ng-model="ingredient.fraction.denominator" id="denominator" convert-to-number>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+              <option value="8">8</option>
+            </select>
+            <select ng-model="ingredient.unit" id="unit">
+              <option value=""></option>
+              <option value="tsp">tsp</option>
+              <option value="tbs">tbsp</option>
+              <option value="cup">cup</option>
+              <option value="oz">oz</option>
+              <option value="lb">lb</option>
+            </select>
+
+            <select ng-model="ingredient.foodItem" class="u-full-width u-max-full-width">
+              <option ng-repeat="foodItem in foodItems" value="{{foodItem._id}}">{{foodItem.name}}</option>
+            </select>
+            <button type="button" ng-click="addIngredient(ingredient)">Add Ingredient</button>
+            <button type="button" ng-click="clearFoodItems()">Clear</button>
+          </span>
 
           <h2>Instructions</h2>
           <textarea id="instructions" ng-model="recipe.instructions" rows="8" class="u-full-width u-max-full-width"></textarea><br>

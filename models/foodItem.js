@@ -5,7 +5,7 @@ const Schema = mongoose.Schema;
 const units = require('../lib/units');
 
 const FoodItem = new Schema({
-  name: {type: String, required: true, index: 'text'},
+  name: {type: String, required: true, index: true},
   qty: {type: Number, default: 0},
   fraction: {
     numerator: {type: Number, default: 0},
@@ -40,7 +40,11 @@ const FoodItem = new Schema({
       calcium: Number,
       iron: Number
     }
-  }
+  },
+  source: String,
+  sourceId: {type: String, sparse: true, unique: true}
 });
+
+FoodItem.index({name: 'text'})
 
 module.exports = mongoose.model('FoodItem', FoodItem);
