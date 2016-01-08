@@ -110,11 +110,19 @@ db.once('open', function openCb() {
         var qty = lineArray[2];
         var int = Math.floor(qty);
         var unit = lineArray[3].split(',');
+        var weight = lineArray[4];
         unit[0] = unit[0].replace(/ (.*)/, '');
         var unitOut = unit[0].toLowerCase();
+        if(unitOut === 'teaspoon'){
+          unitOut = 'tsp';
+        }
+        if(unitOut === 'tablespoon' || unitOut === 'tbsp'){
+          unitOut = 'tbs';
+        }
         var bail = false;
         if(Object.keys(units).indexOf(unitOut) < 0){
           bail = true;
+          console.log(unitOut); //temp
         }
 
         if(!bail){
@@ -150,25 +158,24 @@ db.once('open', function openCb() {
               }
 
             };
-
           }
 
-          // const nutrientDefs = {
-          //   203: 'protein',
-          //   204: 'total fat',
-          //   208: 'calories',
-          //   269: 'sugars',
-          //   291: 'dietary fiber',
-          //   301: 'calcium',
-          //   303: 'iron',
-          //   306: 'potassium',
-          //   307: 'sodium',
-          //   401: 'vitamin c',
-          //   605: 'trans fat',
-          //   606: 'saturated fat',
-          //   645: 'mono fat',
-          //   646: 'poly fat'
-          // }
+          Object.keys(nutData[lineArray[0]]).forEach(function(key){
+            nutData[lineArray[0]][key] = nutData[lineArray[0]][key] / (100 / weight)
+          });
+
+          const protein = Math.round(nutData[lineArray[0]][203]) || null;
+          const totalFat = Math.round(nutData[lineArray[0]][204]) || null;
+          const calories = Math.round(nutData[lineArray[0]][208]) || null;
+          const sugars = Math.round(nutData[lineArray[0]][269]) || null;
+          const dietaryFiber = Math.round(nutData[lineArray[0]][291]) || null;
+          const potassium = Math.round(nutData[lineArray[0]][306]) || null;
+          const sodium = Math.round(nutData[lineArray[0]][307]) || null;
+          const transFat = Math.round(nutData[lineArray[0]][605]) || null;
+          const satFat = Math.round(nutData[lineArray[0]][606]) || null;
+          const monoFat = Math.round(nutData[lineArray[0]][645]) || null;
+          const polyFat = Math.round(nutData[lineArray[0]][646]) || null;
+          const totalCarb = Math.round(nutData[lineArray[0]][205]) || null;
 
           var foodItem = {
             name: foodTypes[lineArray[0]].name,
@@ -178,25 +185,25 @@ db.once('open', function openCb() {
             sourceId: lineArray[0] + '-' + lineArray[1],
             nutrition: {
               calories: {
-                total: Math.round(nutData[lineArray[0]][208]) || null,
+                total: calories,
                 // fromFat: Number
               },
               carbohydrates: {
-                total: Math.round(nutData[lineArray[0]][205]) || null,
-                sugar: Math.round(nutData[lineArray[0]][269]) || null,
-                fiber: Math.round(nutData[lineArray[0]][291]) || null
+                total: totalCarb,
+                sugar: sugars,
+                fiber: dietaryFiber,
               },
               // cholesterol: Number,
-              sodium: Math.round(nutData[lineArray[0]][307]) || null,
+              sodium: sodium,
               fat: {
-                total: Math.round(nutData[lineArray[0]][204]) || null,
-                saturated: Math.round(nutData[lineArray[0]][606]) || null,
-                trans: Math.round(nutData[lineArray[0]][605]) || null,
-                polyunsat: Math.round(nutData[lineArray[0]][646]) || null,
-                monounsat: Math.round(nutData[lineArray[0]][645]) || null,
+                total: totalFat,
+                saturated: satFat,
+                trans: transFat,
+                polyunsat: polyFat,
+                monounsat: monoFat,
               },
-              potassium: Math.round(nutData[lineArray[0]][306]) || null,
-              protein: Math.round(nutData[lineArray[0]][203]) || null,
+              potassium: potassium,
+              protein: protein,
               // vitamin: {
               //   a: Number,
               //   c: Number,

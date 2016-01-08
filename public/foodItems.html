@@ -1,6 +1,30 @@
 <!doctype html>
 <html ng-app="foodApp">
 <head>
+
+  <!-- ****** faviconit.com favicons ****** -->
+  <link rel="shortcut icon" href="/images/icon/favicon.ico">
+  <link rel="icon" sizes="16x16 32x32 64x64" href="/images/icon/favicon.ico">
+  <link rel="icon" type="image/png" sizes="196x196" href="/images/icon/favicon-192.png">
+  <link rel="icon" type="image/png" sizes="160x160" href="/images/icon/favicon-160.png">
+  <link rel="icon" type="image/png" sizes="96x96" href="/images/icon/favicon-96.png">
+  <link rel="icon" type="image/png" sizes="64x64" href="/images/icon/favicon-64.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/icon/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/icon/favicon-16.png">
+  <link rel="apple-touch-icon" href="/images/icon/favicon-57.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="/images/icon/favicon-114.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="/images/icon/favicon-72.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="/images/icon/favicon-144.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="/images/icon/favicon-60.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="/images/icon/favicon-120.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="/images/icon/favicon-76.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="/images/icon/favicon-152.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/icon/favicon-180.png">
+  <meta name="msapplication-TileColor" content="#FFFFFF">
+  <meta name="msapplication-TileImage" content="/images/icon/favicon-144.png">
+  <meta name="msapplication-config" content="/browserconfig.xml">
+  <!-- ****** faviconit.com favicons ****** -->
+
   <title>Foods</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link href='//fonts.googleapis.com/css?family=Raleway:400,300,600' rel='stylesheet' type='text/css'>
@@ -68,7 +92,7 @@
           </thead>
           <tbody>
             <tr ng-repeat="foodItem in foodItems">
-              <td><a href="#" ng-click="loadItem(foodItem._id)">{{foodItem.name}}</a></td>
+              <td class="u-full-width"><a href="#" ng-click="loadItem(foodItem._id)">{{foodItem.name}}</a></td>
               <!-- <td><span ng-show="foodItem.qty > 0">{{foodItem.qty}}</span> <span ng-show="foodItem.fraction.numerator > 0">{{foodItem.fraction.numerator}}/{{foodItem.fraction.denominator}}</span> {{foodItem.unit}}</td> -->
               <td class="center">{{foodItem.nutrition.calories.total}}</td>
               <td class="center">{{foodItem.nutrition.carbohydrates.total}}</td>
@@ -106,10 +130,11 @@
               <select ng-model="foodItem.unit" id="unit">
                 <option value=""></option>
                 <option value="tsp">tsp</option>
-                <option value="tbs">tbsp</option>
+                <option value="tbs">tbs</option>
                 <option value="cup">cup</option>
                 <option value="oz">oz</option>
                 <option value="lb">lb</option>
+                <option value="fl">fl oz</option>
               </select>
             </div>
           </div>
@@ -205,9 +230,9 @@
           </div>
 
           <br>
-          <button type="submit" ng-click="saveFoodItem(foodItem)" class="button-primary">Save</button>
+          <button type="submit" ng-click="saveFoodItem(foodItem)" class="button-primary" ng-show="!foodItem.source">Save</button>
           <button type="button" ng-click="showEditor = !showEditor">Cancel</button>
-          <button href="#" ng-click="removeItem(foodItem._id)">Delete</button>
+          <button href="#" ng-click="removeItem(foodItem._id)" ng-show="!foodItem.source">Delete</button>
         </form>
       </div>
 
