@@ -1,12 +1,21 @@
 'use strict';
 
 const express = require('express');
+const https = require('https');
+const fs = require('fs');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const routes = require('./lib/routes');
 const DB = 'mongodb://localhost:27017/mealplanner';
 const PORT = 3000;
+const key = fs.readFileSync('./privkey.pem');
+const cert = fs.readFileSync('./cert.pem')
+const https_options = {
+  key,
+  cert
+};
+
 let server;
 
 const start = (cb) => {
@@ -19,7 +28,7 @@ const start = (cb) => {
     app.use(bodyParser.urlencoded());
     app.use(cors());
     app.use(routes);
-    server = app.listen(PORT, cb);
+    server = https.createServer(https_options, app).listen(PORT, cb);
   });
 };
 
