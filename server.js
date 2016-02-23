@@ -1,40 +1,34 @@
 'use strict';
 
 const express = require('express');
-var bodyParser = require('body-parser')
+const cors = require('cors');
+const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
+const routes = require('./lib/routes');
 const DB = 'mongodb://localhost:27017/mealplanner';
 const PORT = 3000;
 let server;
 
-function start(cb) {
+const start = (cb) => {
   mongoose.connect(DB);
-  var db = mongoose.connection;
+  const db = mongoose.connection;
   db.on('error', cb);
-  db.once('open', function openCb() {
+  db.once('open', () => {
     const app = express();
-    app.use(express.static('public'));
-    app.use(express.static('shared'));
     app.use(bodyParser.json());
-    app.use(require('./lib/routes'));
+    app.use(bodyParser.urlencoded());
+    app.use(cors());
+    app.use(routes);
     server = app.listen(PORT, cb);
   });
-}
-
-function stop(cb){
-  try{
-    server.close(function serverStopCb() {
-      mongoose.disconnect(function mongooseStopCb(){
-        if(cb) { cb(); }
-      });
-    });
-  }catch(e){
-    if(cb) { return cb(e); }
-    process.exit(1);
-  }
-}
-
-module.exports = {
-  start: start,
-  stop: stop
 };
+
+const stop = (cb) => {
+  server.close(() => {
+    mongoose.disconnect(() => {
+      if (cb) { return cb(); }
+    });
+  });
+};
+
+module.exports = {start, stop};

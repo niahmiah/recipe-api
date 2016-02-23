@@ -9,7 +9,7 @@ const FoodItem = new Schema({
   qty: {type: Number, default: 0},
   fraction: {
     numerator: {type: Number, default: 0},
-    denominator: {type: Number, enum: [2,3,4,5,6,8], default: 2}
+    denominator: {type: Number, enum: [2, 3, 4, 5, 6, 8], default: 2}
   },
   unit: {type: String, enum: Object.keys(units)},
   nutrition: {
@@ -29,7 +29,7 @@ const FoodItem = new Schema({
       saturated: Number,
       trans: Number,
       polyunsat: Number,
-      monounsat: Number,
+      monounsat: Number
     },
     potassium: Number,
     protein: Number,
@@ -41,10 +41,12 @@ const FoodItem = new Schema({
       iron: Number
     }
   },
-  source: String,
+  source: {type: Schema.Types.ObjectId, ref: 'Person', autopopulate: true},
   sourceId: {type: String, sparse: true, unique: true}
 });
 
-FoodItem.index({name: 'text'})
+FoodItem.index({name: 'text'});
+
+FoodItem.plugin(require('mongoose-autopopulate'));
 
 module.exports = mongoose.model('FoodItem', FoodItem);

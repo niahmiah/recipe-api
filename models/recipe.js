@@ -3,22 +3,30 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const units = require('../lib/units');
+const dateFormat = require('dateformat');
 
 const IngredientAmount = new Schema({
   foodItem: {type: Schema.Types.ObjectId, ref: 'FoodItem', autopopulate: true},
   qty: {type: Number, required: true, default: 0},
   fraction: {
     numerator: {type: Number, default: 0},
-    denominator: {type: Number, enum: [2,3,4,5,6,8], default: 2}
+    denominator: {type: Number, enum: [2, 3, 4, 5, 6, 8], default: 2}
   },
   unit: {type: String, enum: Object.keys(units)}
+}, {
+  toObject: { getters: true, virtuals: true },
+  toJSON: { getters: true, virtuals: true }
 });
 
 IngredientAmount.plugin(require('mongoose-autopopulate'));
 
-const Recipe = new Schema({
+let Recipe = new Schema({
+  author: {type: Schema.Types.ObjectId, ref: 'Person', autopopulate: true},
   name: {type: String, required: true},
-  mealTypes: {type: Array, enum: ["breakfast", "lunch", "dinner", "snack", "entree", "side", "beverage"]},
+  mealTypes: {
+    type: Array,
+    enum: ['breakfast', 'lunch', 'dinner', 'snack', 'entree', 'side', 'beverage']
+  },
   ingredients: [IngredientAmount],
   instructions: {type: String},
   time: {
@@ -43,7 +51,7 @@ const Recipe = new Schema({
       saturated: {type: Number},
       trans: {type: Number},
       polyunsat: {type: Number},
-      monounsat: {type: Number},
+      monounsat: {type: Number}
     },
     potassium: {type: Number},
     protein: {type: Number},
@@ -54,11 +62,16 @@ const Recipe = new Schema({
       calcium: {type: Number},
       iron: {type: Number}
     }
-  }
+  },
+  photo: {type: Buffer}
 });
 
 Recipe.plugin(require('mongoose-autopopulate'));
 
+Recipe.virtual('created').get(function getVirtualCreated() {
+  return dateFormat(mongoose.Types.ObjectId(this._id).getTimestamp(), 'mmmm dS, yyyy');
+});
+
 Recipe.index({name: 'text'});
 
-module.exports = mongoose.model('Recipe', Recipe);
+module.exports = Recipe = mongoose.model('Recipe', Recipe);

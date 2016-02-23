@@ -60,6 +60,9 @@ function getFoods(callback){
     if(lineArray[5]){
       foodTypes[lineArray[0]].name += '- ' + lineArray[5];
     }
+    if(lineArray[11]){
+      //this is the multiplier for getting calories from fat
+    }
   });
 
   lineReader.on('close', function(){
