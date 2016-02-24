@@ -41,8 +41,14 @@ const FoodItem = new Schema({
       iron: Number
     }
   },
-  source: {type: Schema.Types.ObjectId, ref: 'Person', autopopulate: true},
-  sourceId: {type: String, sparse: true, unique: true}
+  source: {
+    type: Schema.Types.ObjectId,
+    ref: 'Person',
+    autopopulate: {
+      select: 'firstName lastName email'
+    }
+  },
+  sourceId: {type: String}
 });
 
 FoodItem.index({name: 'text'});

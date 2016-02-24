@@ -21,7 +21,13 @@ const IngredientAmount = new Schema({
 IngredientAmount.plugin(require('mongoose-autopopulate'));
 
 let Recipe = new Schema({
-  author: {type: Schema.Types.ObjectId, ref: 'Person', autopopulate: true},
+  author: {
+    type: Schema.Types.ObjectId,
+    ref: 'Person',
+    autopopulate: {
+      select: 'firstName lastName email'
+    }
+  },
   name: {type: String, required: true},
   mealTypes: {
     type: Array,
