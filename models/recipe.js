@@ -25,7 +25,7 @@ let Recipe = new Schema({
     type: Schema.Types.ObjectId,
     ref: 'Person',
     autopopulate: {
-      select: 'firstName lastName email'
+      select: 'firstName lastName gravatar'
     }
   },
   name: {type: String, required: true},

@@ -9,6 +9,7 @@ const gravatar = require('gravatar');
 
 let Person = new Schema({
   email: {type: String, validate: [validate.email, 'invalid email address'], unique: true},
+  gravatar: String,
   password: String,
   firstName: {type: String},
   lastName: {type: String},
@@ -25,10 +26,6 @@ Person.virtual('created').get(function getVirtualCreated() {
   return dateFormat(mongoose.Types.ObjectId(this._id).getTimestamp(), 'mmmm dS, yyyy');
 });
 
-Person.virtual('gravatar').get(function getVirtualGravatar() {
-  return gravatar.url(this.email, {s: '200', r: 'pg', d: 'identicon'});
-});
-
 Person.statics.authenticate = (credentials, cb) => {
   const noUserError = new Error('Invalid credentials');
   if (!credentials || !credentials.email || !credentials.password) { return cb(noUserError); }
@@ -37,7 +34,14 @@ Person.statics.authenticate = (credentials, cb) => {
     if (err || !person) { return cb(noUserError); }
     bcrypt.compare(credentials.password, person.password, (err2, match) => {
       if (err2 || !match) { return cb(noUserError); }
-      return cb(null, person);
+      if (person.gravatar) {
+        return cb(null, person);
+      } else {
+        person.gravatar = gravatar.url(credentials.email, {s: '200', r: 'pg', d: 'identicon'});
+        person.save((err3) => {
+          cb(err3, person);
+        });
+      }
     });
   });
 };
@@ -50,6 +54,7 @@ Person.statics.create = (credentials, cb) => {
     if (err) { return cb(noUserError); }
     const person = new Person({
       email: credentials.email,
+      gravatar: gravatar.url(credentials.email, {s: '200', r: 'pg', d: 'identicon'}),
       password: hash
     });
     person.save(cb);

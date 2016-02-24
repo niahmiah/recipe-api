@@ -45,7 +45,7 @@ const FoodItem = new Schema({
     type: Schema.Types.ObjectId,
     ref: 'Person',
     autopopulate: {
-      select: 'firstName lastName email'
+      select: 'firstName lastName gravatar'
     }
   },
   sourceId: {type: String}
