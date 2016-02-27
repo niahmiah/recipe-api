@@ -10,7 +10,7 @@ const measure = require('measure').measure;
 
 const IngredientAmount = new Schema({
   foodItem: {type: Schema.Types.ObjectId, ref: 'FoodItem', autopopulate: true},
-  qty: {type: Number, required: true, default: 0},
+  qty: {type: Number, default: 0},
   fraction: {
     numerator: {type: Number, default: 0},
     denominator: {type: Number, enum: [2, 3, 4, 5, 6, 8], default: 2}
