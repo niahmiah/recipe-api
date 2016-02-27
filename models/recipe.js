@@ -35,7 +35,8 @@ let Recipe = new Schema({
   name: {type: String, required: true},
   mealTypes: {
     type: Array,
-    enum: ['breakfast', 'lunch', 'dinner', 'snack', 'entree', 'side', 'beverage']
+    enum: ['breakfast', 'lunch', 'dinner', 'snack', 'entree', 'side', 'beverage', 'dessert'],
+    default: []
   },
   ingredients: [IngredientAmount],
   instructions: {type: String},
@@ -43,7 +44,7 @@ let Recipe = new Schema({
     prep: Number,
     cook: Number
   },
-  servings: {type: Number, required: true},
+  servings: {type: Number, default: 1},
   nutrition: {
     calories: {
       total: {type: Number},
