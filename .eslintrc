@@ -12,6 +12,8 @@
     "new-cap": [1],
     "max-params": [0],
     "max-statements": [1],
-    "filenames/filenames": [0]
+    "max-nested-callbacks": [0],
+    "filenames/filenames": [0],
+    "prefer-spread": [0]
   }
 }

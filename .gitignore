@@ -4,3 +4,4 @@ node_modules/
 db_backups/
 *.pem
 ssl
+coverage

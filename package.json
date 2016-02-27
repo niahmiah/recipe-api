@@ -4,7 +4,7 @@
   "description": "Stephanie's Recipes",
   "main": "index.js",
   "scripts": {
-    "test": "mocha",
+    "test": "PORT=3001 DB='mongodb://localhost:27017/mealplanner-test' istanbul cover _mocha -- --recursive test/",
     "start": "node index"
   },
   "author": "Ian Patton",
@@ -27,6 +27,8 @@
     "express": "^4.13.3",
     "fractional": "^1.0.0",
     "gravatar": "^1.4.0",
+    "istanbul": "^0.4.2",
+    "lodash": "3.10.x",
     "measure": "git+https://github.com/niahmiah/measure.git",
     "moment": "^2.11.0",
     "mongoose": "^4.3.4",
