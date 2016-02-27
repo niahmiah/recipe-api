@@ -155,23 +155,30 @@ const recalculateNutrition = function (recipe) {
 
 Recipe.statics.create = (recipeData, cb) => {
   const recipe = new Recipe(recipeData);
+  debug(`NEW ${JSON.stringify(recipeData, null, 2)}`);
   recipe.save((err) => {
-    if (err) { return cb(err); }
+    if (err) {
+      return cb(`Error saving recipe ${err}`);
+    }
     Recipe.findOne({_id: recipe._id}, (err2, r) => {
       if (err2) { return cb(err2); }
       try {
         r.nutrition = recalculateNutrition(r.toObject());
       } catch (e) {
-        return cb(e);
+        return cb(`Error calculating nutrition ${e}`);
       }
       r.save((err3) => {
-        cb(err3, r);
+        if(err3) {
+          cb(`Error saving after nutrition added ${err3}`);
+        }
+        cb(null, r);
       });
     });
   });
 };
 
 Recipe.statics.update = (id, recipeData, cb) => {
+  debug(`UPDATE ${JSON.stringify(recipeData, null, 2)}`);
   Recipe.findOneAndUpdate({_id: id}, recipeData, {new: true}, (err, recipe) => {
     if (err) { return cb(err); }
     if (!recipe) { return cb(null, null); }
