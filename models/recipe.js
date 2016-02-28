@@ -165,28 +165,31 @@ const resizePhoto = (dataurl, cb) => {
   const buffer = new Buffer(base64img, 'base64');
   async.waterfall([
     (done) => {
-      lwip.open(buffer, ext, function(err, img) {
+      lwip.open(buffer, ext, (err, img) => {
         if (err) { return done(err); }
-        console.log('raw', img.width(), img.height());
+        const width = 800;
+        const height = 600;
+        const s = Math.max(width / img.width(), height / img.height());
         img.batch()
-          .cover(800, 600)
+          .scale(s, s)
+          .crop(width, height)
           .toBuffer('jpg', {quality: 85}, done);
       });
     },
     (picBuffer, done) => {
-      lwip.open(picBuffer, ext, function(err, thumbBuffer) {
+      lwip.open(picBuffer, ext, (err, img) => {
         if (err) { return done(err); }
-        thumbBuffer.batch()
-          .cover(80, 80)
-          .toBuffer('jpg', {quality: 85}, (err, thumbBuffer) => {
-            done(err, picBuffer, thumbBuffer);
-          });
+        const width = 80;
+        const height = 80;
+        const s = Math.max(width / img.width(), height / img.height());
+        img.batch()
+          .scale(s, s)
+          .crop(width, height)
+          .toBuffer('jpg', {quality: 85}, done);
       });
     }
   ], (err, picBuffer, thumbBuffer) => {
     if (err) { return cb(err); }
-    console.log('pic', picBuffer.width(), picBuffer.height());
-    console.log('thumb', thumbBuffer.width(), thumbBuffer.height());
     const p = pre + picBuffer.toString('base64');
     const t = pre + thumbBuffer.toString('base64');
     cb(null, p, t);
