@@ -165,7 +165,7 @@ const resizePhoto = (dataurl, cb) => {
   const buffer = new Buffer(base64img, 'base64');
   async.parallel([
     (done) => {
-      lwip.open(buffer, ext, (err, img) => {
+      lwip.open(buffer, ext, function(err, img) {
         if (err) { return done(err); }
         img.batch()
           .cover(800, 600)
@@ -173,7 +173,7 @@ const resizePhoto = (dataurl, cb) => {
       });
     },
     (done) => {
-      lwip.open(buffer, ext, (err, img) => {
+      lwip.open(buffer, ext, function(err, img) {
         if (err) { return done(err); }
         img.batch()
           .cover(80, 80)
