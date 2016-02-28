@@ -8,6 +8,7 @@ const dateFormat = require('dateformat');
 const debug = require('debug')('recipe');
 const measure = require('measure').measure;
 const lwip = require('lwip');
+const async = require('async');
 
 const IngredientAmount = new Schema({
   foodItem: {type: Schema.Types.ObjectId, ref: 'FoodItem', autopopulate: true},
@@ -160,31 +161,35 @@ const resizePhoto = (dataurl, cb) => {
   const matches = dataurl.match(regex);
   const ext = matches[1];
   const base64img = matches[2];
-  console.log('Resizing image... Size before resize:', base64img.length);
+  const pre = `data:image/${ext};base64,`;
   const buffer = new Buffer(base64img, 'base64');
-  lwip.open(buffer, ext, (err, img) => {
-    if (err) { return cb(err); }
-    img.contain(800, 800, (err2, picture) => {
-      if (err2) { return cb(err2); }
-      picture.contain(120, 120, (err3, thumbnailRectangle) => {
-        if (err3) { return cb(err3); }
-        thumbnailRectangle.crop(80, 80, (err4, thumb) => {
-          if (err4) { return cb(err4); }
-          picture.toBuffer('jpg', {quality: 85}, (err5, pictureBuffer) => {
-            if (err5) { return cb(err5); }
-            thumb.toBuffer('jpg', {quality: 85}, (err6, thumbBuffer) => {
-              if (err6) { return cb(err6); }
-              const pre = `data:image/${ext};base64,`;
-              const t = pre + thumbBuffer.toString('base64');
-              const p = pre + pictureBuffer.toString('base64');
-              console.log('Resized image... Size after resize:', p.length);
-              cb(null, t, p);
-            });
+  async.parallel([
+    (done) => {
+      lwip.open(buffer, ext, (err, img) => {
+        if (err) { return cb(err); }
+        img.batch()
+          .contain(800, 800)
+          .toBuffer('jpg', {quality: 85}, (err2, pictureBuffer) => {
+            if (err2) { return cb(err2); }
+            const p = pre + pictureBuffer.toString('base64');
+            done(null, p);
           });
-        });
       });
-    });
-  });
+    },
+    (done) => {
+      lwip.open(buffer, ext, (err, img) => {
+        if (err) { return cb(err); }
+        img.batch()
+          .contain(120, 120)
+          .crop(80, 80)
+          .toBuffer('jpg', {quality: 85}, (err2, thumbBuffer) => {
+            if (err2) { return cb(err2); }
+            const p = pre + thumbBuffer.toString('base64');
+            done(null, p);
+          });
+      });
+    }
+  ], cb);
 };
 
 Recipe.statics.create = (recipeData, cb) => {
@@ -214,10 +219,10 @@ Recipe.statics.create = (recipeData, cb) => {
   if (recipeData.thumb) { delete recipeData.thumb; }
   if (recipeData.picture) { delete recipeData.picture; }
   if (recipeData.pictureData) {
-    resizePhoto(recipeData.pictureData, (err, thumb, picture) => {
+    resizePhoto(recipeData.pictureData, (err, pics) => {
       if (err) { return cb(err); }
-      recipeData.thumb = thumb;
-      recipeData.picture = picture;
+      recipeData.thumb = pics[0];
+      recipeData.picture = pics[1];
       doCreate();
     });
   } else {
@@ -245,10 +250,10 @@ Recipe.statics.update = (id, recipeData, cb) => {
   if (recipeData.thumb) { delete recipeData.thumb; }
   if (recipeData.picture) { delete recipeData.picture; }
   if (recipeData.pictureData) {
-    resizePhoto(recipeData.pictureData, (err, thumb, picture) => {
+    resizePhoto(recipeData.pictureData, (err, pics) => {
       if (err) { return cb(err); }
-      recipeData.thumb = thumb;
-      recipeData.picture = picture;
+      recipeData.thumb = pics[0];
+      recipeData.picture = pics[1];
       doUpdate();
     });
   } else {
