@@ -185,7 +185,9 @@ const resizePhoto = (dataurl, cb) => {
         img.batch()
           .scale(s, s)
           .crop(width, height)
-          .toBuffer('jpg', {quality: 85}, done);
+          .toBuffer('jpg', {quality: 85}, (err2, thumbBuffer) => {
+            done(err2, picBuffer, thumbBuffer);
+          });
       });
     }
   ], (err, picBuffer, thumbBuffer) => {
