@@ -163,25 +163,28 @@ const resizePhoto = (dataurl, cb) => {
   const base64img = matches[2];
   const pre = `data:image/${ext};base64,`;
   const buffer = new Buffer(base64img, 'base64');
-  async.parallel([
+  async.waterfall([
     (done) => {
       lwip.open(buffer, ext, function(err, img) {
         if (err) { return done(err); }
+        console.log('raw', img.width(), img.height());
         img.batch()
           .cover(800, 600)
           .toBuffer('jpg', {quality: 85}, done);
       });
     },
-    (done) => {
-      lwip.open(buffer, ext, function(err, img) {
+    (picBuffer, done) => {
+      lwip.open(picBuffer, ext, function(err, thumbBuffer) {
         if (err) { return done(err); }
-        img.batch()
+        thumbBuffer.batch()
           .cover(80, 80)
-          .toBuffer('jpg', {quality: 85}, done);
+          .toBuffer('jpg', {quality: 85}, (err, picBuffer, thumbBuffer));
       });
     }
   ], (err, res) => {
     if (err) { return cb(err); }
+    console.log('pic', res[0].width(), res[0].height());
+    console.log('thumb', res[1].width(), res[1].height());
     const p = pre + res[0].toString('base64');
     const t = pre + res[1].toString('base64');
     cb(null, p, t);
