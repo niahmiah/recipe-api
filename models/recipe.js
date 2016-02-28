@@ -163,33 +163,27 @@ const resizePhoto = (dataurl, cb) => {
   const base64img = matches[2];
   const pre = `data:image/${ext};base64,`;
   const buffer = new Buffer(base64img, 'base64');
-  async.waterfall([
+  async.parallel([
     (done) => {
       lwip.open(buffer, ext, (err, img) => {
         if (err) { return done(err); }
         img.batch()
           .cover(800, 600)
-          .toBuffer('jpg', {quality: 85}, (err2, pictureBuffer) => {
-            if (err2) { return done(err2); }
-            done(null, pictureBuffer);
-          });
+          .toBuffer('jpg', {quality: 85}, done);
       });
     },
-    (pictureBuffer, done) => {
-      lwip.open(pictureBuffer, ext, (err, img) => {
+    (done) => {
+      lwip.open(buffer, ext, (err, img) => {
         if (err) { return done(err); }
         img.batch()
           .cover(80, 80)
-          .toBuffer('jpg', {quality: 85}, (err2, thumbBuffer) => {
-            if (err2) { return done(err2); }
-            done(null, pictureBuffer, thumbBuffer);
-          });
+          .toBuffer('jpg', {quality: 85}, done);
       });
     }
-  ], (err, pictureBuffer, thumbBuffer) => {
+  ], (err, res) => {
     if (err) { return cb(err); }
-    const p = pre + pictureBuffer.toString('base64');
-    const t = pre + thumbBuffer.toString('base64');
+    const p = pre + res[0].toString('base64');
+    const t = pre + res[1].toString('base64');
     cb(null, p, t);
   });
 };
