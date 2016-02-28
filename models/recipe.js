@@ -170,8 +170,9 @@ const resizePhoto = (dataurl, cb) => {
         if (err3) { return cb(err3); }
         thumbnailRectangle.crop(80, 80, (err4, thumb) => {
           if (err4) { return cb(err4); }
-          const t = thumb.toString('base64');
-          const p = picture.toString('base64');
+          const pre = `data:image/${ext};base64,`;
+          const t = pre + thumb.toString('base64');
+          const p = pre + picture.toString('base64');
           console.log('Resized image... Size after resize:', picture.length);
           cb(null, t, p);
         });
