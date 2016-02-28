@@ -163,33 +163,35 @@ const resizePhoto = (dataurl, cb) => {
   const base64img = matches[2];
   const pre = `data:image/${ext};base64,`;
   const buffer = new Buffer(base64img, 'base64');
-  async.parallel([
+  async.waterfall([
     (done) => {
       lwip.open(buffer, ext, (err, img) => {
-        if (err) { return cb(err); }
+        if (err) { return done(err); }
         img.batch()
-          .resize(800)
+          .cover(800, 600)
           .toBuffer('jpg', {quality: 85}, (err2, pictureBuffer) => {
-            if (err2) { return cb(err2); }
-            const p = pre + pictureBuffer.toString('base64');
-            done(null, p);
+            if (err2) { return done(err2); }
+            done(null, pictureBuffer);
           });
       });
     },
-    (done) => {
-      lwip.open(buffer, ext, (err, img) => {
-        if (err) { return cb(err); }
+    (pictureBuffer, done) => {
+      lwip.open(pictureBuffer, ext, (err, img) => {
+        if (err) { return done(err); }
         img.batch()
-          .resize(120)
-          .crop(80, 80)
+          .cover(80, 80)
           .toBuffer('jpg', {quality: 85}, (err2, thumbBuffer) => {
-            if (err2) { return cb(err2); }
-            const p = pre + thumbBuffer.toString('base64');
-            done(null, p);
+            if (err2) { return done(err2); }
+            done(null, pictureBuffer, thumbBuffer);
           });
       });
     }
-  ], cb);
+  ], (err, pictureBuffer, thumbBuffer) => {
+    if (err) { return cb(err); }
+    const p = pre + pictureBuffer.toString('base64');
+    const t = pre + thumbBuffer.toString('base64');
+    cb(null, p, t);
+  });
 };
 
 Recipe.statics.create = (recipeData, cb) => {
