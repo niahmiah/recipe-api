@@ -156,7 +156,7 @@ const recalculateNutrition = (recipe) => {
 };
 
 const resizePhoto = (base64img, cb) => {
-  debug('Image size before resize', base64img.length);
+  console.log('Resizing image... Size before resize:', base64img.length);
   const buffer = new Buffer(base64img, 'base64');
   lwip.open(buffer, 'jpg', (err, img) => {
     if (err) { return cb(err); }
@@ -166,7 +166,10 @@ const resizePhoto = (base64img, cb) => {
         if (err3) { return cb(err3); }
         thumbnailRectangle.crop(80, 80, (err4, thumb) => {
           if (err4) { return cb(err4); }
-          cb(null, thumb.toString('base64'), picture.toString('base64'));
+          const t = thumb.toString('base64');
+          const p = picture.toString('base64');
+          console.log('Resized image... Size after resize:', picture.length);
+          cb(null, t, p);
         });
       });
     });
@@ -213,7 +216,7 @@ Recipe.statics.create = (recipeData, cb) => {
 
 Recipe.statics.update = (id, recipeData, cb) => {
   const doUpdate = () => {
-    debug(`UPDATE ${JSON.stringify(recipeData, null, 2)}`);
+    console.log('Recipe Update', JSON.stringify(recipeData, null, 2));
     Recipe.findOneAndUpdate({_id: id}, recipeData, {new: true}, (err, recipe) => {
       if (err) { return cb(err); }
       if (!recipe) { return cb(null, null); }
