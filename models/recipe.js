@@ -216,7 +216,7 @@ Recipe.statics.create = (recipeData, cb) => {
 
 Recipe.statics.update = (id, recipeData, cb) => {
   const doUpdate = () => {
-    console.log('Recipe Update', JSON.stringify(recipeData, null, 2));
+    debug('UPDATE', JSON.stringify(recipeData, null, 2));
     Recipe.findOneAndUpdate({_id: id}, recipeData, {new: true}, (err, recipe) => {
       if (err) { return cb(err); }
       if (!recipe) { return cb(null, null); }
@@ -230,7 +230,7 @@ Recipe.statics.update = (id, recipeData, cb) => {
         recipePopulated.save((err3) => cb(err3, recipePopulated));
       });
     });
-  }
+  };
   if (recipeData.thumb) { delete recipeData.thumb; }
   if (recipeData.picture) { delete recipeData.picture; }
   if (recipeData.pictureData) {
