@@ -155,10 +155,14 @@ const recalculateNutrition = (recipe) => {
   return nutritionInfo;
 };
 
-const resizePhoto = (base64img, cb) => {
+const resizePhoto = (dataurl, cb) => {
+  const regex = /^data:.+\/(.+);base64,(.*)$/;
+  const matches = dataurl.match(regex);
+  const ext = matches[1];
+  const base64img = matches[2];
   console.log('Resizing image... Size before resize:', base64img.length);
   const buffer = new Buffer(base64img, 'base64');
-  lwip.open(buffer, 'jpg', (err, img) => {
+  lwip.open(buffer, ext, (err, img) => {
     if (err) { return cb(err); }
     img.contain(800, 800, (err2, picture) => {
       if (err2) { return cb(err2); }
