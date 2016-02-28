@@ -10,7 +10,7 @@ const PORT = process.env.PORT || 3000;
 const app = express();
 app.use(cors());
 app.options('*', cors());
-app.use(bodyParser.json());
+app.use(bodyParser.json({limit: '10mb'}));
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(routes);
 
