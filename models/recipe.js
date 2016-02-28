@@ -7,6 +7,7 @@ const objectMod = require('../lib/objectMod');
 const dateFormat = require('dateformat');
 const debug = require('debug')('recipe');
 const measure = require('measure').measure;
+const lwip = require('lwip');
 
 const IngredientAmount = new Schema({
   foodItem: {type: Schema.Types.ObjectId, ref: 'FoodItem', autopopulate: true},
@@ -73,7 +74,8 @@ let Recipe = new Schema({
       iron: {type: Number}
     }
   },
-  photo: {type: Buffer}
+  picture: {type: String},
+  thumb: {type: String}
 });
 
 Recipe.plugin(require('mongoose-autopopulate'));
@@ -102,7 +104,7 @@ const getMeasureString = (object) => {
   return string;
 };
 
-const recalculateNutrition = function (recipe) {
+const recalculateNutrition = (recipe) => {
   let nutritionInfo = {};
   recipe.ingredients.forEach((ingr) => {
     // multiply nutrition info based on measure.js conversion
@@ -153,45 +155,91 @@ const recalculateNutrition = function (recipe) {
   return nutritionInfo;
 };
 
-Recipe.statics.create = (recipeData, cb) => {
-  const recipe = new Recipe(recipeData);
-  debug(`NEW ${JSON.stringify(recipeData, null, 2)}`);
-  recipe.save((err) => {
-    if (err) {
-      return cb(`Error saving recipe ${err}`);
-    }
-    Recipe.findOne({_id: recipe._id}, (err2, r) => {
+const resizePhoto = (base64img, cb) => {
+  debug('Image size before resize', base64img.length);
+  const buffer = new Buffer(base64img, 'base64');
+  lwip.open(buffer, 'jpg', (err, img) => {
+    if (err) { return cb(err); }
+    img.contain(800, 800, (err2, picture) => {
       if (err2) { return cb(err2); }
-      try {
-        r.nutrition = recalculateNutrition(r.toObject());
-      } catch (e) {
-        return cb(`Error calculating nutrition ${e}`);
-      }
-      r.save((err3) => {
-        if(err3) {
-          cb(`Error saving after nutrition added ${err3}`);
-        }
-        cb(null, r);
+      picture.contain(120, 120, (err3, thumbnailRectangle) => {
+        if (err3) { return cb(err3); }
+        thumbnailRectangle.crop(80, 80, (err4, thumb) => {
+          if (err4) { return cb(err4); }
+          cb(null, thumb.toString('base64'), picture.toString('base64'));
+        });
       });
     });
   });
 };
 
-Recipe.statics.update = (id, recipeData, cb) => {
-  debug(`UPDATE ${JSON.stringify(recipeData, null, 2)}`);
-  Recipe.findOneAndUpdate({_id: id}, recipeData, {new: true}, (err, recipe) => {
-    if (err) { return cb(err); }
-    if (!recipe) { return cb(null, null); }
-    Recipe.findOne({_id: id}, (err2, recipePopulated) => {
-      if (err2) { return cb(err2); }
-      try {
-        recipePopulated.nutrition = recalculateNutrition(recipePopulated.toObject());
-      } catch (e) {
-        return cb(e);
+Recipe.statics.create = (recipeData, cb) => {
+  const doCreate = () => {
+    const recipe = new Recipe(recipeData);
+    debug(`NEW ${JSON.stringify(recipeData, null, 2)}`);
+    recipe.save((err) => {
+      if (err) {
+        return cb(`Error saving recipe ${err}`);
       }
-      recipePopulated.save((err3) => cb(err3, recipePopulated));
+      Recipe.findOne({_id: recipe._id}, (err2, r) => {
+        if (err2) { return cb(err2); }
+        try {
+          r.nutrition = recalculateNutrition(r.toObject());
+        } catch (e) {
+          return cb(`Error calculating nutrition ${e}`);
+        }
+        r.save((err3) => {
+          if (err3) {
+            return cb(`Error saving after nutrition added ${err3}`);
+          }
+          cb(null, r);
+        });
+      });
     });
-  });
+  };
+  if (recipeData.thumb) { delete recipeData.thumb; }
+  if (recipeData.picture) { delete recipeData.picture; }
+  if (recipeData.pictureData) {
+    resizePhoto(recipeData.pictureData, (err, thumb, picture) => {
+      if (err) { return cb(err); }
+      recipeData.thumb = thumb;
+      recipeData.picture = picture;
+      doCreate();
+    });
+  } else {
+    doCreate();
+  }
+};
+
+Recipe.statics.update = (id, recipeData, cb) => {
+  const doUpdate = () => {
+    debug(`UPDATE ${JSON.stringify(recipeData, null, 2)}`);
+    Recipe.findOneAndUpdate({_id: id}, recipeData, {new: true}, (err, recipe) => {
+      if (err) { return cb(err); }
+      if (!recipe) { return cb(null, null); }
+      Recipe.findOne({_id: id}, (err2, recipePopulated) => {
+        if (err2) { return cb(err2); }
+        try {
+          recipePopulated.nutrition = recalculateNutrition(recipePopulated.toObject());
+        } catch (e) {
+          return cb(e);
+        }
+        recipePopulated.save((err3) => cb(err3, recipePopulated));
+      });
+    });
+  }
+  if (recipeData.thumb) { delete recipeData.thumb; }
+  if (recipeData.picture) { delete recipeData.picture; }
+  if (recipeData.pictureData) {
+    resizePhoto(recipeData.pictureData, (err, thumb, picture) => {
+      if (err) { return cb(err); }
+      recipeData.thumb = thumb;
+      recipeData.picture = picture;
+      doUpdate();
+    });
+  } else {
+    doUpdate();
+  }
 };
 
 module.exports = Recipe = mongoose.model('Recipe', Recipe);

@@ -29,6 +29,7 @@
     "gravatar": "^1.4.0",
     "istanbul": "^0.4.2",
     "lodash": "3.10.x",
+    "lwip": "0.0.8",
     "measure": "git+https://github.com/niahmiah/measure.git",
     "moment": "^2.11.0",
     "mongoose": "^4.3.4",
