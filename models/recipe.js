@@ -170,11 +170,17 @@ const resizePhoto = (dataurl, cb) => {
         if (err3) { return cb(err3); }
         thumbnailRectangle.crop(80, 80, (err4, thumb) => {
           if (err4) { return cb(err4); }
-          const pre = `data:image/${ext};base64,`;
-          const t = pre + thumb.toString('base64');
-          const p = pre + picture.toString('base64');
-          console.log('Resized image... Size after resize:', picture.length);
-          cb(null, t, p);
+          picture.toBuffer('jpg', {quality: 85}, (err5, pictureBuffer) => {
+            if (err5) { return cb(err5); }
+            thumb.toBuffer('jpg', {quality: 85}, (err6, thumbBuffer) => {
+              if (err6) { return cb(err6); }
+              const pre = `data:image/${ext};base64,`;
+              const t = pre + thumbBuffer.toString('base64');
+              const p = pre + pictureBuffer.toString('base64');
+              console.log('Resized image... Size after resize:', p.length);
+              cb(null, t, p);
+            });
+          });
         });
       });
     });
