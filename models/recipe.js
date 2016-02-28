@@ -168,7 +168,7 @@ const resizePhoto = (dataurl, cb) => {
       lwip.open(buffer, ext, (err, img) => {
         if (err) { return cb(err); }
         img.batch()
-          .contain(800, 800)
+          .resize(800)
           .toBuffer('jpg', {quality: 85}, (err2, pictureBuffer) => {
             if (err2) { return cb(err2); }
             const p = pre + pictureBuffer.toString('base64');
@@ -180,7 +180,7 @@ const resizePhoto = (dataurl, cb) => {
       lwip.open(buffer, ext, (err, img) => {
         if (err) { return cb(err); }
         img.batch()
-          .contain(120, 120)
+          .resize(120)
           .crop(80, 80)
           .toBuffer('jpg', {quality: 85}, (err2, thumbBuffer) => {
             if (err2) { return cb(err2); }
