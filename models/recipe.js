@@ -178,15 +178,17 @@ const resizePhoto = (dataurl, cb) => {
         if (err) { return done(err); }
         thumbBuffer.batch()
           .cover(80, 80)
-          .toBuffer('jpg', {quality: 85}, (err, picBuffer, thumbBuffer));
+          .toBuffer('jpg', {quality: 85}, (err, thumbBuffer) => {
+            done(err, picBuffer, thumbBuffer);
+          });
       });
     }
-  ], (err, res) => {
+  ], (err, picBuffer, thumbBuffer) => {
     if (err) { return cb(err); }
-    console.log('pic', res[0].width(), res[0].height());
-    console.log('thumb', res[1].width(), res[1].height());
-    const p = pre + res[0].toString('base64');
-    const t = pre + res[1].toString('base64');
+    console.log('pic', picBuffer.width(), picBuffer.height());
+    console.log('thumb', thumbBuffer.width(), thumbBuffer.height());
+    const p = pre + picBuffer.toString('base64');
+    const t = pre + thumbBuffer.toString('base64');
     cb(null, p, t);
   });
 };
