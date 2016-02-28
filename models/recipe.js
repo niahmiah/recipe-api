@@ -169,6 +169,11 @@ const resizePhoto = (dataurl, cb) => {
         if (err) { return done(err); }
         const width = 800;
         const height = 600;
+        console.log('WIDTH', width);
+        console.log('HEIGHT', height);
+        console.log('IMGWIDTH', img.width());
+        console.log('IMGHEIGHT', img.height());
+        console.log('SCALE', Math.max(width / img.width(), height / img.height());
         const s = Math.max(width / img.width(), height / img.height());
         img.batch()
           .scale(s, s)
