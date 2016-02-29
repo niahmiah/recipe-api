@@ -233,10 +233,10 @@ Recipe.statics.create = (recipeData, cb) => {
   if (recipeData.picture) { delete recipeData.picture; }
   if (recipeData.pictureData) {
     console.log('before resize', recipeData.pictureData.length);
-    resizePhoto(recipeData.pictureData, (err, pics) => {
+    resizePhoto(recipeData.pictureData, (err, pic, thumb) => {
       if (err) { return cb(err); }
-      recipeData.picture = pics[0];
-      recipeData.thumb = pics[1];
+      recipeData.picture = pic;
+      recipeData.thumb = thumb;
       console.log('thumb after resize', recipeData.thumb.length);
       console.log('pic after resize', recipeData.picture.length);
       doCreate();
@@ -267,10 +267,10 @@ Recipe.statics.update = (id, recipeData, cb) => {
   if (recipeData.picture) { delete recipeData.picture; }
   if (recipeData.pictureData) {
     console.log('before resize', recipeData.pictureData.length);
-    resizePhoto(recipeData.pictureData, (err, pics) => {
+    resizePhoto(recipeData.pictureData, (err, pic, thumb) => {
       if (err) { return cb(err); }
-      recipeData.picture = pics[0];
-      recipeData.thumb = pics[1];
+      recipeData.picture = pic;
+      recipeData.thumb = thumb;
       console.log('thumb after resize', recipeData.thumb.length);
       console.log('pic after resize', recipeData.picture.length);
       doUpdate();
