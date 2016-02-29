@@ -176,8 +176,8 @@ const resizePhoto = (dataurl, cb) => {
         console.log('SCALE', Math.max(width / img.width(), height / img.height()));
         const s = Math.max(width / img.width(), height / img.height());
         img.batch()
-          .scale(s)
-          // .crop(width, height)
+          // .scale(s)
+          .crop(width, height)
           .toBuffer('jpg', {quality: 85}, done);
       });
     },
