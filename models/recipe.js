@@ -169,27 +169,29 @@ const resizePhoto = (dataurl, cb) => {
         if (err) { return done(err); }
         const width = 800;
         const height = 600;
-        console.log('WIDTH', width);
-        console.log('HEIGHT', height);
-        console.log('IMGWIDTH', img.width());
-        console.log('IMGHEIGHT', img.height());
-        console.log('SCALE', Math.max(width / img.width(), height / img.height()));
-        const s = Math.max(width / img.width(), height / img.height());
+        const imgWidth = img.width();
+        const imgHeight = img.height();
+        const scale = Math.max(width / imgWidth, height / imgHeight);
+        const newWidth = Math.round(imgWidth * scale);
+        const newHeight = Math.round(imgHeight * scale);
         img.batch()
-          // .scale(s)
-          .crop(width, height)
+          .resize(newWidth, newHeight)
           .toBuffer('jpg', {quality: 85}, done);
       });
     },
     (picBuffer, done) => {
       lwip.open(picBuffer, ext, (err, img) => {
         if (err) { return done(err); }
-        const width = 80;
-        const height = 80;
-        const s = Math.max(width / img.width(), height / img.height());
+        const width = 120;
+        const height = 90;
+        const imgWidth = img.width();
+        const imgHeight = img.height();
+        const scale = Math.max(width / imgWidth, height / imgHeight);
+        const newWidth = Math.round(imgWidth * scale);
+        const newHeight = Math.round(imgHeight * scale);
         img.batch()
-          .scale(s)
-          // .crop(width, height)
+          .resize(newWidth, newHeight)
+          .crop(90, 90)
           .toBuffer('jpg', {quality: 85}, (err2, thumbBuffer) => {
             done(err2, picBuffer, thumbBuffer);
           });
